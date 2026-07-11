@@ -39,7 +39,7 @@ jobs:
       run: npm install --legacy-peer-deps
 
     - name: Compile and Package Installer
-      run: npm run build:electron || npm run build || true
+      run: npm run build
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NODE_ENV: production
@@ -49,7 +49,6 @@ jobs:
       with:
         name: Oneworx-Windows-Installer
         path: |
-          dist/*.exe
-          dist_electron/*.exe
-          packaged/*.exe
-          dist/packaged/*.exe
+          **/*.exe
+          **/*.msi
+          src-electron/dist/**/*.exe
