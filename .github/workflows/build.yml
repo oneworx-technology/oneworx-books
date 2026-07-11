@@ -1,31 +1,59 @@
-name: Build
+name: Build Oneworx Installer
 
 on:
-  pull_request:
-    paths-ignore:
-      - '**.md'
-  workflow_dispatch:
+  workflow_dispatch: # Allows you to start the build with a single click
 
 jobs:
-  setup_and_build:
-    runs-on: macos-15-intel
+  build:
+    runs-on: windows-latest
+
     steps:
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.18.1'
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
-      - name: Set yarn version
-        run: yarn set version 1.22.18
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+        cache: 'npm'
 
-      - name: Checkout Books
-        uses: actions/checkout@v4
+    - name: Install Icon Conversion Tool
+      run: npm install -g electron-icon-maker
 
-      - name: Install Dependencies
-        run: yarn
+    - name: Generate Desktop Icons from PNG
+      shell: bash
+      run: |
+        # Creates standard .ico and .icns files from your uploaded logo.png
+        electron-icon-maker --input=build-assets/logo.png --output=build-assets
+        
+        # Copy the newly generated icons into the Electron asset folder
+        cp build-assets/icons/win/icon.ico src-electron/icons/icon.ico || true
+        cp build-assets/icons/mac/icon.icns src-electron/icons/icon.icns || true
+        cp build-assets/logo.png src/assets/logo.png || true
 
-      - name: Run build
-        env:
-          CSC_IDENTITY_AUTO_DISCOVERY: false
-          APPLE_NOTARIZE: 0
-        run: yarn build -mw --publish never
+    - name: Automate Text and Branding Swap
+      shell: bash
+      run: |
+        # Change internal package configurations to Oneworx
+        sed -i 's/"name": "frappe-books"/"name": "oneworx"/g' package.json
+        sed -i 's/"productName": "Frappe Books"/"productName": "Oneworx"/g' package.json
+        sed -i 's/"description": ".*"/"description": "Oneworx Accounting Software"/g' package.json
+        
+        # Globally replace "Frappe Books" names in the visible user interface files
+        find src/ -type f -exec sed -i 's/Frappe Books/Oneworx/g' {} + || true
+
+    - name: Install Project Dependencies
+      run: npm install
+
+    - name: Compile and Package Installer
+      run: npm run build
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Save Finished Oneworx Installer
+      uses: actions/upload-artifact@v4
+      with:
+        name: Oneworx-Windows-Installer
+        path: |
+          dist/*.exe
+          dist_electron/*.exe
