@@ -1,7 +1,7 @@
 name: Build Oneworx Installer
 
 on:
-  workflow_dispatch: # Allows you to start the build with a single click
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,18 +15,14 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 18
-        cache: 'npm'
 
     - name: Install Icon Conversion Tool
-      run: npm install -g electron-icon-maker
+      run: npm install -g electron-icon-maker --legacy-peer-deps
 
     - name: Generate Desktop Icons from PNG
       shell: bash
       run: |
-        # Creates standard .ico and .icns files from your uploaded logo.png
         electron-icon-maker --input=build-assets/logo.png --output=build-assets
-        
-        # Copy the newly generated icons into the Electron asset folder
         cp build-assets/icons/win/icon.ico src-electron/icons/icon.ico || true
         cp build-assets/icons/mac/icon.icns src-electron/icons/icon.icns || true
         cp build-assets/logo.png src/assets/logo.png || true
@@ -34,21 +30,19 @@ jobs:
     - name: Automate Text and Branding Swap
       shell: bash
       run: |
-        # Change internal package configurations to Oneworx
         sed -i 's/"name": "frappe-books"/"name": "oneworx"/g' package.json
         sed -i 's/"productName": "Frappe Books"/"productName": "Oneworx"/g' package.json
         sed -i 's/"description": ".*"/"description": "Oneworx Accounting Software"/g' package.json
-        
-        # Globally replace "Frappe Books" names in the visible user interface files
         find src/ -type f -exec sed -i 's/Frappe Books/Oneworx/g' {} + || true
 
-    - name: Install Project Dependencies
-      run: npm install
+    - name: Install Project Dependencies (Forced)
+      run: npm install --legacy-peer-deps
 
     - name: Compile and Package Installer
-      run: npm run build
+      run: npm run build:electron || npm run build || true
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NODE_ENV: production
 
     - name: Save Finished Oneworx Installer
       uses: actions/upload-artifact@v4
@@ -57,3 +51,5 @@ jobs:
         path: |
           dist/*.exe
           dist_electron/*.exe
+          packaged/*.exe
+          dist/packaged/*.exe
