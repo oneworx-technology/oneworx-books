@@ -35,8 +35,16 @@ jobs:
         $iconPath = "build/icon.ico"
         
         if (Test-Path $logoPath) {
-          & "C:\Program Files\ImageMagick-7.1.1-Q16-x64\convert.exe" "$logoPath" -resize 256x256 -flatten "$iconPath"
-          Write-Host "Icon generated successfully: $iconPath"
+          # Find ImageMagick's convert executable
+          $convertPath = (Get-Command convert.exe -ErrorAction SilentlyContinue).Source
+          
+          if ($convertPath) {
+            & "$convertPath" "$logoPath" -resize 256x256 -flatten "$iconPath"
+            Write-Host "Icon generated successfully: $iconPath"
+          } else {
+            Write-Host "ImageMagick convert.exe not found in PATH"
+            exit 1
+          }
         } else {
           Write-Host "Logo not found at: $logoPath"
         }
