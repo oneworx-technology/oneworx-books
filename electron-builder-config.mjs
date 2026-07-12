@@ -7,7 +7,7 @@ const buildDirPath = path.join(root, 'dist_electron', 'build');
 const packageDirPath = path.join(root, 'dist_electron', 'bundled');
 
 const oneworxBooksConfig = {
-  productName: 'Oneworx Books',
+  productName: 'Oneworx',
   appId: 'co.za.oneworx.books',
   artifactName: '${productName}-v${version}-Setup.${ext}',
   asarUnpack: '**/*.node',
@@ -24,7 +24,7 @@ const oneworxBooksConfig = {
   },
   win: {
     publisherName: 'Oneworx Technology',
-    artifactName: 'OneworxBooks-v${version}-Setup.${ext}',
+    artifactName: 'Oneworx-v${version}-Setup.${ext}',
     icon: 'build/icon.ico',
     target: [
       {
@@ -46,7 +46,7 @@ const oneworxBooksConfig = {
     installerHeaderIcon: 'build/icon.ico',
     createDesktopShortcut: true,
     createStartMenuShortcut: true,
-    shortcutName: 'Oneworx Books',
+    shortcutName: 'Oneworx',
     license: 'LICENSE',
     installerSidebar: 'build/installerSidebar.bmp',
   },
