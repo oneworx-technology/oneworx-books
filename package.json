@@ -1,10 +1,11 @@
 {
-  "name": "frappe-books",
-  "version": "0.37.0",
-  "description": "Simple book-keeping app for everyone",
+  "name": "oneworx-books",
+  "version": "1.0.0",
+  "description": "Oneworx Books - Professional Accounting & POS Software for South African Businesses",
   "author": {
-    "name": "Frappe Technologies Pvt. Ltd.",
-    "email": "hello@frappe.io"
+    "name": "Oneworx Technology",
+    "email": "mail@oneworx.co.za",
+    "url": "https://oneworx.co.za"
   },
   "scripts": {
     "dev": "node build/scripts/dev.mjs",
@@ -91,7 +92,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "homepage": "https://frappe.io/books",
+  "homepage": "https://oneworx.co.za",
   "repository": {
     "url": "https://github.com/frappe/books"
   },
