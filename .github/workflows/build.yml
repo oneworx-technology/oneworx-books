@@ -22,6 +22,13 @@ jobs:
     - name: Install Project Dependencies
       run: yarn install
 
+    - name: Create Missing log_creds.txt
+      run: |
+        echo "dummy-key" > log_creds.txt
+        echo "dummy-secret" >> log_creds.txt
+        echo "dummy-url" >> log_creds.txt
+        echo "dummy-telemetry" >> log_creds.txt
+
     - name: Build Oneworx Windows Installer
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
