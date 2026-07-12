@@ -14,41 +14,23 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version: '20.18.1'
 
-    - name: Install Icon Conversion Tool
-      run: npm install -g electron-icon-maker --legacy-peer-deps
+    - name: Install Yarn
+      run: npm install -g yarn
 
-    - name: Generate Desktop Icons from PNG
-      shell: bash
-      run: |
-        electron-icon-maker --input=build-assets/logo.png --output=build-assets
-        cp build-assets/icons/win/icon.ico src-electron/icons/icon.ico || true
-        cp build-assets/icons/mac/icon.icns src-electron/icons/icon.icns || true
-        cp build-assets/logo.png src/assets/logo.png || true
+    - name: Install Project Dependencies
+      run: yarn install
 
-    - name: Automate Text and Branding Swap
-      shell: bash
-      run: |
-        sed -i 's/"name": "frappe-books"/"name": "oneworx"/g' package.json
-        sed -i 's/"productName": "Frappe Books"/"productName": "Oneworx"/g' package.json
-        sed -i 's/"description": ".*"/"description": "Oneworx Accounting Software"/g' package.json
-        find src/ -type f -exec sed -i 's/Frappe Books/Oneworx/g' {} + || true
-
-    - name: Install Project Dependencies (Forced)
-      run: npm install --legacy-peer-deps
-
-    - name: Compile and Package Installer
-      run: npm run build
+    - name: Build Oneworx Windows Installer
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NODE_ENV: production
+      run: yarn build --win
 
-    - name: Save Finished Oneworx Installer
+    - name: Upload Windows Installer Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: Oneworx-Windows-Installer
-        path: |
-          **/*.exe
-          **/*.msi
-          src-electron/dist/**/*.exe
+        path: dist_electron/bundled/
+        retention-days: 30
