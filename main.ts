@@ -23,7 +23,7 @@ import registerIpcMainMessageListeners from './main/registerIpcMainMessageListen
 import registerProcessListeners from './main/registerProcessListeners';
 
 export class Main {
-  title = 'Oneworx Books';
+  title = 'Oneworx';
   icon: string;
 
   winURL = '';
