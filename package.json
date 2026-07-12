@@ -1,7 +1,7 @@
 {
   "name": "oneworx-books",
   "version": "1.0.0",
-  "description": "Oneworx Books - Professional Accounting & POS Software for South African Businesses",
+  "description": "Oneworx - Professional Accounting & POS Software",
   "author": {
     "name": "Oneworx Technology",
     "email": "mail@oneworx.co.za",
@@ -94,7 +94,7 @@
   },
   "homepage": "https://oneworx.co.za",
   "repository": {
-    "url": "https://github.com/frappe/books"
+    "url": "https://github.com/oneworx-technology/oneworx-books"
   },
   "license": "AGPL-3.0-only"
 }
