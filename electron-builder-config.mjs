@@ -9,7 +9,7 @@ const packageDirPath = path.join(root, 'dist_electron', 'bundled');
 const oneworxBooksConfig = {
   productName: 'Oneworx',
   appId: 'co.za.oneworx.books',
-  artifactName: '${productName}-v${version}-Setup.${ext}',
+  artifactName: '${productName}-v${version}.${ext}',
   asarUnpack: '**/*.node',
   extraResources: [
     { from: 'log_creds.txt', to: '../creds/log_creds.txt' },
@@ -24,31 +24,13 @@ const oneworxBooksConfig = {
   },
   win: {
     publisherName: 'Oneworx Technology',
-    artifactName: 'Oneworx-v${version}-Setup.${ext}',
-    icon: 'build/icon.ico',
+    artifactName: 'Oneworx-v${version}.${ext}',
     target: [
-      {
-        target: 'nsis',
-        arch: ['x64'],
-      },
       {
         target: 'portable',
         arch: ['x64'],
       },
     ],
-  },
-  nsis: {
-    oneClick: false,
-    perMachine: false,
-    allowToChangeInstallationDirectory: true,
-    installerIcon: 'build/installericon.ico',
-    uninstallerIcon: 'build/uninstallericon.ico',
-    installerHeaderIcon: 'build/icon.ico',
-    createDesktopShortcut: true,
-    createStartMenuShortcut: true,
-    shortcutName: 'Oneworx',
-    license: 'LICENSE',
-    installerSidebar: 'build/installerSidebar.bmp',
   },
 };
 
