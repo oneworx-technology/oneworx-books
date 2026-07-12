@@ -19,6 +19,28 @@ jobs:
     - name: Install Yarn
       run: npm install -g yarn
 
+    - name: Install ImageMagick
+      run: choco install imagemagick.app -y
+
+    - name: Generate 256x256 Icon from Logo
+      shell: pwsh
+      run: |
+        # Create icons directory if needed
+        if (!(Test-Path "build/icons")) {
+          New-Item -ItemType Directory -Path "build/icons" -Force
+        }
+        
+        # Generate proper 256x256 icon from your logo
+        $logoPath = "build-assets/logo.png"
+        $iconPath = "build/icon.ico"
+        
+        if (Test-Path $logoPath) {
+          & "C:\Program Files\ImageMagick-7.1.1-Q16-x64\convert.exe" "$logoPath" -resize 256x256 -flatten "$iconPath"
+          Write-Host "Icon generated successfully: $iconPath"
+        } else {
+          Write-Host "Logo not found at: $logoPath"
+        }
+
     - name: Install Project Dependencies
       run: yarn install
 
