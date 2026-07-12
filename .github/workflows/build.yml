@@ -1,4 +1,4 @@
-name: Build Oneworx Installer
+name: Build Oneworx App
 
 on:
   workflow_dispatch:
@@ -19,42 +19,6 @@ jobs:
     - name: Install Yarn
       run: npm install -g yarn
 
-    - name: Install ImageMagick
-      run: choco install imagemagick.app -y
-
-    - name: Generate 256x256 Icon from Logo
-      shell: pwsh
-      run: |
-        # Create icons directory if needed
-        if (!(Test-Path "build/icons")) {
-          New-Item -ItemType Directory -Path "build/icons" -Force
-        }
-        
-        $logoPath = "build-assets/logo.png"
-        $iconPath = "build/icon.ico"
-        
-        if (Test-Path $logoPath) {
-          # Use full ImageMagick path to avoid Windows convert.exe conflict
-          $magickPath = "C:\Program Files\ImageMagick-7.1.1-Q16-x64\magick.exe"
-          
-          if (!(Test-Path $magickPath)) {
-            # Try alternative ImageMagick paths
-            $magickPath = (Get-ChildItem "C:\Program Files\ImageMagick*" -Filter "magick.exe" -Recurse | Select-Object -First 1).FullName
-          }
-          
-          if ($magickPath) {
-            Write-Host "Using ImageMagick: $magickPath"
-            & "$magickPath" "$logoPath" -resize 256x256 -flatten "$iconPath"
-            Write-Host "Icon generated successfully: $iconPath"
-          } else {
-            Write-Host "ImageMagick not found - using fallback"
-            # Fallback: create a minimal valid ICO file
-            Write-Host "Warning: Using placeholder icon"
-          }
-        } else {
-          Write-Host "Logo not found at: $logoPath"
-        }
-
     - name: Install Project Dependencies
       run: yarn install
 
@@ -65,15 +29,15 @@ jobs:
         echo "dummy-url" >> log_creds.txt
         echo "dummy-telemetry" >> log_creds.txt
 
-    - name: Build Oneworx Windows Installer
+    - name: Build Oneworx App (Portable)
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NODE_ENV: production
-      run: yarn build --win
+      run: yarn build --win --dir
 
-    - name: Upload Windows Installer Artifacts
+    - name: Upload App Build Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: Oneworx-Windows-Installer
+        name: Oneworx-App
         path: dist_electron/bundled/
         retention-days: 30
